@@ -103,7 +103,7 @@ fi
 TARGET_SERVER="10.4.2.1"
 TARGET_USER="root"
 TARGET_PORT="55"
-TARGET_DIR="/home/docker-images-backup"
+TARGET_DIR="/home/docker-images-backup/"
 
 # 通过scp传输tar文件到目标服务器
 echo "Transferring $output_file to $TARGET_SERVER..."
