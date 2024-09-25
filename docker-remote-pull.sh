@@ -71,14 +71,22 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 保存Docker镜像为tar文件
-echo "Saving Docker image as $output_file..."
-docker save -o $output_file $full_image_name
+# 检查文件是否已经存在
+if [ -f "$output_file" ]; then
+    echo "File already exists: $output_file"
+    # 如果需要进一步确认文件是否是最新的，可以在这里添加额外的检查逻辑
+    # 例如：比较文件的mtime与镜像的创建时间等
+else
+    # 保存Docker镜像为tar文件
+    echo "Saving Docker image as $output_file..."
+    docker save -o "$output_file" "$full_image_name"
 
-# 检查镜像保存是否成功
-if [ $? -ne 0 ]; then
-    echo "Failed to save Docker image: $full_image_name to $output_file"
-    exit 1
+    # 检查镜像保存是否成功
+    if [ $? -ne 0 ]; then
+        echo "Failed to save Docker image: $full_image_name to $output_file"
+        exit 1
+    fi
+    echo "Docker image saved successfully."
 fi
 
 # 定义目标服务器信息
