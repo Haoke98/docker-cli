@@ -61,14 +61,22 @@ else
     fi
 fi
 
-# 拉取Docker镜像
-echo "Pulling Docker image: $full_image_name..."
-docker pull $full_image_name
+# 检查本地是否有这个标签的镜像
+image_id=$(docker images -q "$full_image_name")
 
-# 检查镜像拉取是否成功
-if [ $? -ne 0 ]; then
-    echo "Failed to pull Docker image: $full_image_name"
-    exit 1
+# 如果镜像存在，则不进行拉取
+if [ -n "$image_id" ]; then
+    echo "Image with tag $image_tag already exists locally."
+else
+    # 拉取Docker镜像
+    echo "Pulling Docker image: $full_image_name..."
+    docker pull "$full_image_name"
+
+    # 检查镜像拉取是否成功
+    if [ $? -ne 0 ]; then
+        echo "Failed to pull Docker image: $full_image_name"
+        exit 1
+    fi
 fi
 
 # 检查文件是否已经存在
