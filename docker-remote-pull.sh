@@ -48,20 +48,23 @@ fi
 if [ -z "$registry_mirror" ]; then
     if [ -z "$name_space" ]; then
         full_image_name="${image_name}:${image_tag}"
-        output_file="$save_dir/docker_image_${image_name}_v${image_tag}.tar"
+        output_file_name="docker_image_${image_name}_v${image_tag}.tar"
     else
         full_image_name="${name_space}/${image_name}:${image_tag}"
-        output_file="$save_dir/docker_image_${name_space}_${image_name}_v${image_tag}.tar"
+        output_file_name="docker_image_${name_space}_${image_name}_v${image_tag}.tar"
     fi
 else
     if [ -z "$name_space" ]; then
         full_image_name="${registry_mirror}/${image_name}:${image_tag}"
-        output_file="$save_dir/docker_image_${registry_mirror}_${image_name}_v${image_tag}.tar"
+        output_file_name="docker_image_${registry_mirror}_${image_name}_v${image_tag}.tar"
     else
         full_image_name="${registry_mirror}/${name_space}/${image_name}:${image_tag}"
-        output_file="$save_dir/docker_image_${registry_mirror}_${name_space}_${image_name}_v${image_tag}.tar"
+        output_file_name="docker_image_${registry_mirror}_${name_space}_${image_name}_v${image_tag}.tar"
     fi
 fi
+
+output_file="$save_dir/$output_file_name"
+
 
 # 检查本地是否有这个标签的镜像
 image_id=$(docker images -q "$full_image_name")
@@ -117,7 +120,7 @@ fi
 
 # 通过SSH远程加载Docker镜像
 echo "Loading Docker image on remote server..."
-ssh -p $TARGET_PORT ${TARGET_USER}@${TARGET_SERVER} "docker load -i ${TARGET_DIR}${output_file}"
+ssh -p $TARGET_PORT ${TARGET_USER}@${TARGET_SERVER} "docker load -i ${TARGET_DIR}${output_file_name}"
 
 # 检查远程加载是否成功
 if [ $? -ne 0 ]; then
