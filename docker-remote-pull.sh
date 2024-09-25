@@ -35,8 +35,16 @@ fi
 image_name=$(echo $image_name_tag | awk -F':' '{print $1}')
 image_tag=$(echo $image_name_tag | awk -F':' '{print $2}')
 
+# 默认保存目录
+save_dir="/home/docker-images-backup"
+
+# 创建目录如果不存在
+if [ ! -d "$save_dir" ]; then
+    mkdir -p "$save_dir"
+fi
+
 # 设置输出的tar文件名称
-output_file="docker_image_${name_space}_${image_name}_v${image_tag}.tar"
+output_file="$save_dir/docker_image_${name_space}_${image_name}_v${image_tag}.tar"
 
 # 构造full_image_name
 if [ -z "$registry_mirror" ]; then
@@ -77,7 +85,7 @@ fi
 TARGET_SERVER="10.4.2.1"
 TARGET_USER="root"
 TARGET_PORT="55"
-TARGET_DIR="/home/"
+TARGET_DIR="/home/docker-images-backup"
 
 # 通过scp传输tar文件到目标服务器
 echo "Transferring $output_file to $TARGET_SERVER..."
