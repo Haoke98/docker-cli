@@ -43,21 +43,23 @@ if [ ! -d "$save_dir" ]; then
     mkdir -p "$save_dir"
 fi
 
-# 设置输出的tar文件名称
-output_file="$save_dir/docker_image_${name_space}_${image_name}_v${image_tag}.tar"
 
-# 构造full_image_name
+# 构造full_image_name && 设置输出的tar文件名称
 if [ -z "$registry_mirror" ]; then
     if [ -z "$name_space" ]; then
         full_image_name="${image_name}:${image_tag}"
+        output_file="$save_dir/docker_image_${image_name}_v${image_tag}.tar"
     else
         full_image_name="${name_space}/${image_name}:${image_tag}"
+        output_file="$save_dir/docker_image_${name_space}_${image_name}_v${image_tag}.tar"
     fi
 else
     if [ -z "$name_space" ]; then
         full_image_name="${registry_mirror}/${image_name}:${image_tag}"
+        output_file="$save_dir/docker_image_${registry_mirror}_${image_name}_v${image_tag}.tar"
     else
         full_image_name="${registry_mirror}/${name_space}/${image_name}:${image_tag}"
+        output_file="$save_dir/docker_image_${registry_mirror}_${name_space}_${image_name}_v${image_tag}.tar"
     fi
 fi
 
